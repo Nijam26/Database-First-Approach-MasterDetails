@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EvidenceDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="EvidenceDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Customers" EntityType="EvidenceDBModel.Customer" />
+    <EntitySet Name="Orders" EntityType="EvidenceDBModel.Order" />
+    <AssociationSet Name="FK_dbo_Orders_dbo_Customers_CustomerID" Association="EvidenceDBModel.FK_dbo_Orders_dbo_Customers_CustomerID">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Order" EntitySet="Orders" />
+    </AssociationSet>
+    <EntitySet Name="items" EntityType="EvidenceDBModel.item" />
+    <AssociationSet Name="FK_Orders_dbo_Items_ItemID" Association="EvidenceDBModel.FK_Orders_dbo_Items_ItemID">
+      <End Role="item" EntitySet="items" />
+      <End Role="Order" EntitySet="Orders" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <Property Name="CutomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="BillingAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Imagepath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Orders" Relationship="EvidenceDBModel.FK_dbo_Orders_dbo_Customers_CustomerID" FromRole="Customer" ToRole="Order" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="OrderID" />
+    </Key>
+    <Property Name="OrderID" Type="Int32" Nullable="false" />
+    <Property Name="CustomerID" Type="Int32" />
+    <Property Name="orderDate" Type="DateTime" Precision="3" />
+    <Property Name="OrderStatus" Type="Boolean" />
+    <NavigationProperty Name="Customer" Relationship="EvidenceDBModel.FK_dbo_Orders_dbo_Customers_CustomerID" FromRole="Order" ToRole="Customer" />
+    <Property Name="OrderNo" Type="Int32" Nullable="false" />
+    <Property Name="ItemID" Type="Int32" />
+    <NavigationProperty Name="item" Relationship="EvidenceDBModel.FK_Orders_dbo_Items_ItemID" FromRole="Order" ToRole="item" />
+  </EntityType>
+  <Association Name="FK_dbo_Orders_dbo_Customers_CustomerID">
+    <End Type="EvidenceDBModel.Customer" Role="Customer" Multiplicity="0..1" />
+    <End Type="EvidenceDBModel.Order" Role="Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="item">
+    <Key>
+      <PropertyRef Name="ItemID" />
+    </Key>
+    <Property Name="ItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ItemName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Orders" Relationship="EvidenceDBModel.FK_Orders_dbo_Items_ItemID" FromRole="item" ToRole="Order" />
+  </EntityType>
+  <Association Name="FK_Orders_dbo_Items_ItemID">
+    <End Type="EvidenceDBModel.item" Role="item" Multiplicity="0..1" />
+    <End Type="EvidenceDBModel.Order" Role="Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="item">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
